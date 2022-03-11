@@ -1,4 +1,7 @@
 <script setup>
+import test from '@/assets/five-letter-words.json'
+console.log(typeof test)
+
 defineProps({
   msg: {
     type: String,
@@ -17,28 +20,48 @@ document.onkeypress = function(e) {
 }
 
 const doLetter = (letter) => {
-    alert(letter)
+    console.log(letter)
 }
 </script>
 
 <template>
-    <div class="top row">
-        <a v-for="i in topLetters.length" @click.prevent="doLetter(topLetters[i-1])" href="#" :key="i">{{topLetters[i-1]}}</a>
-    </div>
-    <div class="mid row">
-        <a v-for="i in midLetters.length" @click.prevent="doLetter(midLetters[i-1])" href="#" :key="i">{{midLetters[i-1]}}</a>
-    </div>
-    <div class="low row">
-        <a href="#">enter</a>
-        <a v-for="i in lowLetters.length" @click.prevent="doLetter(lowLetters[i-1])" href="#" :key="i">{{lowLetters[i-1]}}</a>
-        <a href="#">X</a>
-    </div>        
+    <div class="rows">
+        <div class="row">
+            <button v-for="i in topLetters.length" @click.prevent="doLetter(topLetters[i-1])" :key="i">{{topLetters[i-1]}}</button>
+        </div>
+        <div class="row">
+            <div class="f-pt-5"></div>
+            <button v-for="i in midLetters.length" @click.prevent="doLetter(midLetters[i-1])" :key="i">{{midLetters[i-1]}}</button>
+            <div class="f-pt-5"></div>
+        </div>
+        <div class="low row">
+            <button class="enter f-1-pt-5">enter</button>
+            <button v-for="i in lowLetters.length" @click.prevent="doLetter(lowLetters[i-1])" :key="i">{{lowLetters[i-1]}}</button>
+            <button class="f-1-pt-5">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                    <path fill="white" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
+                </svg>                
+            </button>
+        </div>    
+    </div>    
 </template>
 
 <style scoped>
-    .row { display: grid; gap: 4px; justify-items: center; align-items: center; }
-    .top { grid-template-columns: repeat(10,1fr);}
-    .mid { margin: 0 20px; grid-template-columns: repeat(9,1fr); }
-    .low { grid-template-columns: repeat(7,1fr); }
-    .row a { padding: 5px; text-transform: uppercase; }
+    /* helpers */
+    .f-pt-5 { flex: 0.5; }
+    .f-1-pt-5 { flex: 1.5; }
+
+    .rows { display:grid; margin: 0 8px; gap: 8px; }
+    .row { display: flex; }
+    button { 
+        padding: 5px; text-transform: uppercase; border-radius: 4px;
+        height:58px; display:grid; place-items:center; font-weight: bold; 
+        color: white; background: #818384; user-select: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0.3);
+        border:0;
+        /* flex */
+        flex:1; margin-right: 6px;
+    }
+    button:last-of-type { margin: 0 }
+    .enter { font-size: 13px;}
 </style>

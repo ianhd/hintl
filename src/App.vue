@@ -3,7 +3,7 @@ import Keyboard from './components/Keyboard.vue'
 </script>
 
 <template>
-    <div class="wrapper">
+    <div class="main">
         <Keyboard msg="You did it!" />
     </div>
 </template>
@@ -12,8 +12,9 @@ import Keyboard from './components/Keyboard.vue'
 @import './assets/base.css';
 
 #app {
-
 }
+
+.main { width: 500px; margin: 0 auto; }
 
 a,
 .green {
