@@ -1,10 +1,17 @@
 <script setup>
 import Keyboard from './components/Keyboard.vue'
+import Grid from './components/Grid.vue'
+
+const keyEntered = (key) => {
+    alert('test' + key)
+}
+
 </script>
 
 <template>
     <div class="main">
-        <Keyboard msg="You did it!" />
+        <Grid msg="You did it!" />
+        <Keyboard @enter-key="keyEntered" msg="You did it!" />
     </div>
 </template>
 
