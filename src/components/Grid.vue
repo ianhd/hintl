@@ -1,4 +1,7 @@
 <script setup>
+import gameStore from '@/stores/gameStore'
+
+const sharedGameState = gameStore.state
 
 defineProps({
   msg: {
@@ -10,8 +13,12 @@ defineProps({
 
 <template>
     <div class="wrapper">
-        <div v-for="i in 6" :key="i" class="row">
-            <div v-for="j in 5" :key="j"></div>
+        <div v-for="i in gameStore.constants.numRows" :key="i" 
+            class="row animate__animated" 
+            :class="{'animate__headShake':sharedGameState.invalidWordRowIdx == i-1}">
+            <div class="cell" v-for="j in gameStore.constants.numCols" :key="j" :data-s="sharedGameState.grid[i-1][j-1].s">
+                {{sharedGameState.grid[i-1][j-1].ltr}}
+            </div>
         </div>
     </div>
 </template>
@@ -25,4 +32,7 @@ defineProps({
     text-transform: uppercase; user-select: none; 
     font-size: 30px; color:white;
 }
+.cell[data-s="n"] { background: #3a3a3c; }
+.cell[data-s="w"] { background: #b59f3b; }
+.cell[data-s="c"] { background: #538d4e; }
 </style>

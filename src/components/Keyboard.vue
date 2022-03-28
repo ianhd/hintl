@@ -1,11 +1,40 @@
 <script setup>
-import test from '@/assets/five-letter-words.json'
-console.log(typeof test)
+import gameStore from '@/stores/gameStore'
+import { inject } from "vue"
+import { Fireworks } from 'fireworks-js'
 
-const emits = defineEmits(['enter-key'])
+const toast = inject("toast")
+const container = document.querySelector('.fireworks-container')
+const fireworks = new Fireworks(container, { /* options */ })
+
+// const emits = defineEmits(['enter-key'])
 
 const enterKey = (key) => {
-    emits('enter-key', key)
+    if (key == 'Enter') {
+        if (!gameStore.currentRowHasSpace()) {
+            const res = gameStore.submitRow()
+            if (res == 'Success')
+            { 
+                toast.success(res, { position: "bottom", pauseOnHover: false })
+                fireworks.start()
+                setTimeout(() => fireworks.stop(),4000)
+            } else if (res == 'Next') {} // nothing to toast
+            else {
+                toast.show(res, { position: "bottom", pauseOnHover: false })
+            }
+            return
+        } 
+        return // still space left in current row
+    }
+    if (key == 'Backspace') {
+        gameStore.backspace()
+        return
+    }
+    //if (key === 'enter' || key === 'back-space') return // handle this later
+    if (gameStore.currentRowHasSpace()) {
+        gameStore.addLetter(key)
+    }
+    // emits('enter-key', key)
 }
 
 defineProps({
@@ -19,9 +48,18 @@ const topLetters = 'qwertyuiop'
 const midLetters = 'asdfghjkl'
 const lowLetters = 'zxcvbnm'
 
-document.onkeypress = function(e) {
-    if (!/[a-z]/i.test(e.key))
+document.onkeydown = function(e) {
+    if (e.key === 'Enter' || e.key === 'Backspace') {
+        enterKey(e.key)
         return
+    }
+
+    // not a regular letter, so do nothing
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
+    if (!alphabet.includes(e.key))
+        return
+
+    // normal letter
     enterKey(e.key)
 }
 </script>
@@ -37,13 +75,13 @@ document.onkeypress = function(e) {
             <div class="f-pt-5"></div>
         </div>
         <div class="low row">
-            <button class="enter f-1-pt-5" @click.prevent="enterKey('enter')">enter</button>
-            <button v-for="i in lowLetters.length" @click.prevent="enterKey(lowLetters[i-1])" :key="i">{{lowLetters[i-1]}}</button>
-            <button class="f-1-pt-5" @click.prevent="enterKey('back-space')">
+            <button class="f-1-pt-5" @click.prevent="enterKey('Backspace')">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
                     <path fill="white" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
                 </svg>                
-            </button>
+            </button>            
+            <button v-for="i in lowLetters.length" @click.prevent="enterKey(lowLetters[i-1])" :key="i">{{lowLetters[i-1]}}</button>
+            <button class="enter f-1-pt-5" @click.prevent="enterKey('Enter')">enter</button>
         </div>    
     </div>    
 </template>
