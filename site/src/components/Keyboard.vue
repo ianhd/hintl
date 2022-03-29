@@ -5,9 +5,8 @@ import { Fireworks } from 'fireworks-js'
 
 const toast = inject("toast")
 const container = document.querySelector('.fireworks-container')
-const fireworks = new Fireworks(container, { /* options */ })
-
-// const emits = defineEmits(['enter-key'])
+const fireworks = new Fireworks(container, { acceleration: 1.02, traceSpeed: 6 })
+container.style.display = 'none'
 
 const enterKey = (key) => {
     if (key == 'Enter') {
@@ -16,8 +15,9 @@ const enterKey = (key) => {
             if (res == 'Success')
             { 
                 toast.success(res, { position: "bottom", pauseOnHover: false })
+                container.style.display = 'block'
                 fireworks.start()
-                setTimeout(() => fireworks.stop(),4000)
+                //setTimeout(() => fireworks.stop(),5000)
             } else if (res == 'Next') {} // nothing to toast
             else {
                 toast.show(res, { position: "bottom", pauseOnHover: false })
