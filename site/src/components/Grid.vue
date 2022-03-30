@@ -32,7 +32,7 @@ defineProps({
     text-transform: uppercase; user-select: none; 
     font-size: 30px; color:white;
 }
-.cell[data-s="n"] { background: #3a3a3c; }
-.cell[data-s="w"] { background: #b59f3b; }
-.cell[data-s="c"] { background: #538d4e; }
+.cell[data-s="n"] { background: var(--nope-color); }
+.cell[data-s="w"] { background: var(--wrong-color); }
+.cell[data-s="c"] { background: var(--correct-color); }
 </style>

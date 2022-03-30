@@ -24,6 +24,16 @@ const gameStore = {
     currentRowHasSpace() {
         return this.state.currentColIdx < this.constants.numCols
     },
+    getKeyState(ltr) {
+        if (!ltr) return ``
+        const states = ['c','w','n']
+        for(var i = 0; i < states.length; i++) {
+            const s = states[i]
+            const exists = this.state.grid.some(arr => arr.some(cell => cell.ltr == ltr && cell.s == s))
+            if (exists) return s
+        }
+        return ``
+    },
     backspace() {
         if (this.state.currentColIdx == 0) return // prevent backspace if row is empty
         this.state.currentColIdx -= 1

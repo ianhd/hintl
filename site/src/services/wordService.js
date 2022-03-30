@@ -22,6 +22,7 @@ class WordService {
         const oneDay = 24 * 60 * 60 * 1000 // hours*minutes*seconds*milliseconds
         const diffDays = Math.round(Math.abs((launchDate - today) / oneDay))
         this.answer = words[diffDays]
+        console.log(this.answer)
     }
     #processWrongWord2(word) {                                      // word =    t,r,a,m,p
         let tempAns = this.answer
