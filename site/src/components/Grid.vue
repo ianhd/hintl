@@ -35,4 +35,10 @@ defineProps({
 .cell[data-s="n"] { background: var(--nope-color); }
 .cell[data-s="w"] { background: var(--wrong-color); }
 .cell[data-s="c"] { background: var(--correct-color); }
+
+/* TABLET AND BELOW */
+@media screen and (max-width: 499px) {
+    .wrapper { width: 280px; }
+    .row > div { height: 50px; }
+}
 </style>

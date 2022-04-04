@@ -1,9 +1,14 @@
 import words from '@/assets/five-letter-words.json'
+import hints from '@/assets/hints.json'
+
 const launchDate = new Date(`03/29/2022`)
 
 class WordService {
     constructor() {
-        this.#setTodaysAnswer()
+        this.#setTodaysAnswerAndHint()
+    }
+    getHint() {
+        return this.hint
     }
     submit(word) {
         // deeds = https://i.imgur.com/8szRrgQ.png
@@ -16,13 +21,13 @@ class WordService {
 
         this.#processWrongWord2(word)
     }
-    #setTodaysAnswer() {
+    #setTodaysAnswerAndHint() {
         var today = new Date()
         today.setHours(0,0,0,0) // to midnight
         const oneDay = 24 * 60 * 60 * 1000 // hours*minutes*seconds*milliseconds
         const diffDays = Math.round(Math.abs((launchDate - today) / oneDay))
-        this.answer = words[diffDays]
-        console.log(this.answer)
+        this.answer = Object.keys(hints)[diffDays]
+        this.hint = hints[this.answer]
     }
     #processWrongWord2(word) {                                      // word =    t,r,a,m,p
         let tempAns = this.answer

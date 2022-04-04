@@ -2,6 +2,8 @@
 import 'animate.css'
 import Keyboard from './components/Keyboard.vue'
 import Grid from './components/Grid.vue'
+import DateSwitcher from './components/DateSwitcher.vue'
+import Hint from './components/Hint.vue'
 
 // const keyEntered = (key) => {
 //     alert('test' + key)
@@ -14,9 +16,15 @@ import Grid from './components/Grid.vue'
         <div class="mt-50 mt-20_m">
             <Grid msg="You did it!" />
         </div>
+        <div class="controls">
+            <div></div>
+            <!-- <DateSwitcher class="ta-c" /> -->
+            <div></div>
+            <Hint class="ta-r" />
+        </div>
         <!-- <Keyboard @enter-key="keyEntered" msg="You did it!" /> -->
-        <div class="mt-50 mt-20_m">
-            <Keyboard msg="You did it!" />
+        <div class="mt-25 mt-20_m">
+            <Keyboard  msg="You did it!" />
         </div>
     </div>
 </template>
@@ -26,6 +34,8 @@ import Grid from './components/Grid.vue'
 
 #app {
 }
+
+.controls { font-size: 18px; display:grid; grid-template-columns: 1fr 1fr 1fr; }
 
 .main { width: 500px; margin: 0 auto; }
 
@@ -45,5 +55,6 @@ a,
 /* TABLET AND BELOW */
 @media screen and (max-width: 499px) {
     .main { width: 100%; }
+    .controls { margin: 20px 20px 30px 20px; }
 }
 </style>
