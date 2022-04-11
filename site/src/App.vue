@@ -16,11 +16,11 @@ import Hint from './components/Hint.vue'
         <div class="mt-50 mt-20_m">
             <Grid msg="You did it!" />
         </div>
-        <div class="controls">
+        <div class="controls mt-25">
+            <div></div>
             <div></div>
             <!-- <DateSwitcher class="ta-c" /> -->
-            <div></div>
-            <Hint class="ta-r" />
+            <Hint />
         </div>
         <!-- <Keyboard @enter-key="keyEntered" msg="You did it!" /> -->
         <div class="mt-25 mt-20_m">

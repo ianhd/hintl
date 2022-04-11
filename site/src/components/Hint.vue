@@ -29,7 +29,9 @@ const revealHint = () => {
     <div class="modal" v-if="state.hintHtml">
         <div class="modalContents" v-html="state.hintHtml"></div>
     </div>
-    <a href="#" v-if="hint" @click.prevent="revealHint()">Hint</a>
+    <div class="ta-r">
+        <a href="#" v-if="hint" @click.prevent="revealHint()">Hint</a>
+    </div>
 </template>
 
 <style scoped>

@@ -5,6 +5,9 @@ const ws = new wordSvc()
 
 const gameStore = {
     state: reactive({
+        dateLabel: `Today`,
+        answer: ``,
+        hint: ``,
         currentRowIdx: 0,
         currentColIdx: 0,
         grid: [ // consider adding states with possible letters (n=nope,c=correct,w=wrong-position)
