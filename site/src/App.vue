@@ -1,20 +1,17 @@
 <script setup>
+// next: restore state for keyboard! colors are not persisting on keys ATM when toggling dates.
+
 import 'animate.css'
 import Keyboard from './components/Keyboard.vue'
 import Grid from './components/Grid.vue'
 import DateSwitcher from './components/DateSwitcher.vue'
 import Hint from './components/Hint.vue'
 import gameStore from '@/stores/gameStore'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 gameStore.load()
 
 const keyboard = ref(null)
-
-onMounted(() => {
-    console.log(keyboard.value)
-    console.log(keyboard)
-})
 </script>
 
 <template>

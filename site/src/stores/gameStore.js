@@ -1,12 +1,27 @@
 import { reactive } from "vue"
-
 import words from '@/assets/five-letter-words.json'
 import hints from '@/assets/hints.json'
+import '@/helpers/date'
 
 import wordService from '@/services/wordService.js'
 const ws = new wordService()
 
 const launchDate = new Date(`03/29/2022`)
+
+const origGrid = [ 
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+    [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
+]
+
+const origAllLetters = {
+    top: [...'qwertyuiop'].map(ltr => ({ ltr,s:`` })),
+    mid: [...'asdfghjkl'].map(ltr => ({ ltr,s:`` })),
+    low: [...'zxcvbnm'].map(ltr => ({ ltr,s:`` }))
+}
 
 const gameStore = {
     load() {
@@ -18,29 +33,56 @@ const gameStore = {
         this.state.hint = hints[this.state.answer]
         this.resetGrid()
         this.resetKeyboard()
+        this.restoreSavedState()
+        this.clearOldSavedStates()
+        this.refreshLetterStates()
     },
     state: reactive({
         dateLabel: `Today`,
         date: new Date(),
+        dateIsoShort: (new Date()).toIsoShort(),
         answer: ``,
         hint: ``,
         currentRowIdx: 0,
         currentColIdx: 0,
-        grid: [ // consider adding states with possible letters (n=nope,c=correct,w=wrong-position)
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-            [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
-        ],
-        allLetters: {
-            top: [...'qwertyuiop'].map(ltr => ({ ltr,s:`` })),
-            mid: [...'asdfghjkl'].map(ltr => ({ ltr,s:`` })),
-            low: [...'zxcvbnm'].map(ltr => ({ ltr,s:`` }))
-        },        
+        grid: origGrid,
+        allLetters: origAllLetters,        
         invalidWordRowIdx: -1
     }),
+    refreshLetterStates() {
+        Object.keys(this.state.allLetters).forEach(k => {
+            this.state.allLetters[k].forEach(obj => {
+                obj.s = this.getKeyState(obj.ltr)
+            })
+        })
+    },    
+    restoreSavedState() {
+        const today = (new Date()).toIsoShort()
+        const currentDate = this.state.dateIsoShort
+        if (today == currentDate) {
+            const gridLsKey = `${today}_grid`
+            const allLettersLsKey = `${today}_allLetters`
+            const grid = localStorage.getItem(gridLsKey) && JSON.parse(localStorage.getItem(gridLsKey))
+            const allLetters = localStorage.getItem(allLettersLsKey) && JSON.parse(localStorage.getItem(allLettersLsKey))
+            if (!grid || !allLetters) return // no saved state yet (user hasn't submitted a row for today)
+            this.state.grid = grid
+            this.state.allLetters = allLetters
+        } else {
+            this.state.grid = origGrid
+            this.state.allLetters = origAllLetters
+        }
+    },
+    clearOldSavedStates() {
+        const today = (new Date()).toIsoShort()
+        // clear old localStorage entries
+        for(const key in localStorage) {
+            if (key.endsWith("_grid") || key.endsWith("_allLetters")) {
+                if (today !== key.split('_')[0]) {
+                    localStorage.removeItem(key)
+                }
+            }
+        }
+    },
     resetKeyboard() {
         Object.keys(this.state.allLetters).forEach(k => {
             this.state.allLetters[k].forEach(obj => {
@@ -97,6 +139,17 @@ const gameStore = {
                 this.state.grid[this.state.currentRowIdx] = err.newRow
                 this.state.currentRowIdx += 1
                 this.state.currentColIdx = 0
+                this.refreshLetterStates()
+
+                // row updated. save this state to localStorage IF date is `Today`
+                const today = (new Date()).toIsoShort()
+                const currentDate = this.state.dateIsoShort
+                
+                if (today == currentDate) {
+                    localStorage.setItem(`${today}_grid`,JSON.stringify(this.state.grid))
+                    localStorage.setItem(`${today}_allLetters`,JSON.stringify(this.state.allLetters))
+                }
+
                 return `Next`
             }
         }

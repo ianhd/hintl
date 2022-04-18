@@ -37,11 +37,16 @@ const go = (direction) => {
 
     if (state.daysOffset == 0) {
         sharedGameState.dateLabel = `Today`
-        sharedGameState.date = new Date()
+        sharedGameState.date = today
+        sharedGameState.dateIsoShort = today.toIsoShort()
     } else {
         sharedGameState.dateLabel = newDate.toLocaleString('en-US', { month:'numeric', day: 'numeric', year: 'numeric' })
         sharedGameState.date = newDate
+        sharedGameState.dateIsoShort = newDate.toIsoShort()
     }
+    try {
+        window.confetti.clear()
+    } catch(err) {}
     gameStore.load()
 }
 
@@ -50,9 +55,9 @@ const ws = new wordSvc()
 
 <template>
     <div class="container">
-        <img @click.prevent="go(-1)" :src="`/src/assets/left-arrow${state.prevSuffix}.svg`" />
+        <img @click.prevent="go(-1)" :src="`/left-arrow${state.prevSuffix}.svg`" />
         <span class="date">{{sharedGameState.dateLabel}}</span>
-        <img @click.prevent="go(1)" :src="`/src/assets/right-arrow${state.nextSuffix}.svg`" />
+        <img @click.prevent="go(1)" :src="`/right-arrow${state.nextSuffix}.svg`" />
     </div>
 </template>
 

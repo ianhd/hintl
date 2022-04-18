@@ -1,41 +1,27 @@
 <script setup>
 import gameStore from '@/stores/gameStore'
-import { reactive, inject } from "vue"
-// import { Fireworks } from 'fireworks-js'
-//import * as Confetti from '@/third-party/confetti.min.js'
+import { inject } from "vue"
 import ConfettiGenerator from "confetti-js"
 
-const state = gameStore.state
 const toast = inject("toast")
-// const container = document.querySelector('.fireworks-container')
-// const fireworks = new Fireworks(container, { acceleration: 1.02, traceSpeed: 6 })
-//container.style.display = 'none'
 
 const enterKey = (key) => {
     if (key == 'Enter') {
-        if (!gameStore.currentRowHasSpace()) {
-            const res = gameStore.submitRow()
-            if (res == 'Success')
-            { 
-                toast.success(res, { position: "bottom", pauseOnHover: false })
+        if (gameStore.currentRowHasSpace()) return 
 
-                const confettiSettings = { target: 'confetti' }
-                const confetti = new ConfettiGenerator(confettiSettings)
-                confetti.render()
+        const res = gameStore.submitRow()
+        if (res == 'Success')
+        { 
+            toast.success(res, { position: "bottom", pauseOnHover: false })
 
-                // container.style.display = 'block'
-                // let confetti = new window.Confetti('enterKey')
-
-                // fireworks.start()
-                //setTimeout(() => fireworks.stop(),5000)
-            } else if (res == 'Next') {} // nothing to toast
-            else {
-                toast.show(res, { position: "bottom", pauseOnHover: false })
-            }
-            refreshLetterStates()
-            return
-        } 
-        return // still space left in current row
+            const confettiSettings = { target: 'confetti' }
+            window.confetti = new ConfettiGenerator(confettiSettings)
+            window.confetti.render()
+        } else if (res == 'Next') {} // nothing to toast
+        else {
+            toast.show(res, { position: "bottom", pauseOnHover: false })
+        }
+        return
     }
     if (key == 'Backspace') {
         gameStore.backspace()
@@ -50,14 +36,6 @@ const enterKey = (key) => {
 
 const reset = () => {
     console.log('reset from keyboard')
-}
-
-const refreshLetterStates = () => {
-    Object.keys(state.allLetters).forEach(k => {
-        state.allLetters[k].forEach(obj => {
-            obj.s = gameStore.getKeyState(obj.ltr)
-        })
-    })
 }
 
 document.onkeydown = function(e) {
@@ -79,11 +57,11 @@ document.onkeydown = function(e) {
 <template>
     <div class="rows">
         <div class="row">
-            <button :data-s="obj.s" v-for="obj in state.allLetters.top" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
+            <button :data-s="obj.s" v-for="obj in gameStore.state.allLetters.top" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
         </div>
         <div class="row">
             <div class="f-pt-5"></div>
-            <button :data-s="obj.s" v-for="obj in state.allLetters.mid" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
+            <button :data-s="obj.s" v-for="obj in gameStore.state.allLetters.mid" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
             <div class="f-pt-5"></div>
         </div>
         <div class="low row">
@@ -92,7 +70,7 @@ document.onkeydown = function(e) {
                     <path fill="white" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
                 </svg>                
             </button>            
-            <button :data-s="obj.s" v-for="obj in state.allLetters.low" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
+            <button :data-s="obj.s" v-for="obj in gameStore.state.allLetters.low" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
             <button id="enterKey" class="enter f-1-pt-5" @click.prevent="enterKey('Enter')">enter</button>
         </div>    
     </div>    
