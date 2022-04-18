@@ -1,9 +1,8 @@
 <script setup>
-import wordSvc from '@/services/wordService.js'
 import { reactive } from "vue"
+import gameStore from '@/stores/gameStore'
 
-const ws = new wordSvc()
-const hint = ws.getHint()
+const hint = gameStore.state.hint
 
 const state = reactive({
     hintHtml: ``
@@ -15,12 +14,12 @@ const closeModal = () => {
 
 const revealHint = () => {
     // hint could be raw html to render
-    if (hint.includes("html:")) {
-        state.hintHtml = hint.substr(5)
+    if (gameStore.state.hint.includes("html:")) {
+        state.hintHtml = gameStore.state.hint.substr(5)
         return
     }
 
-    alert(hint)
+    alert(gameStore.state.hint)
 }
 </script>
 
@@ -30,7 +29,7 @@ const revealHint = () => {
         <div class="modalContents" v-html="state.hintHtml"></div>
     </div>
     <div class="ta-r">
-        <a href="#" v-if="hint" @click.prevent="revealHint()">Hint</a>
+        <a href="#" v-if="hint" @click.prevent="$event.target.blur();revealHint()">Hint</a>
     </div>
 </template>
 

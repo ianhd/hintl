@@ -37,9 +37,12 @@ const go = (direction) => {
 
     if (state.daysOffset == 0) {
         sharedGameState.dateLabel = `Today`
+        sharedGameState.date = new Date()
     } else {
         sharedGameState.dateLabel = newDate.toLocaleString('en-US', { month:'numeric', day: 'numeric', year: 'numeric' })
+        sharedGameState.date = newDate
     }
+    gameStore.load()
 }
 
 const ws = new wordSvc()

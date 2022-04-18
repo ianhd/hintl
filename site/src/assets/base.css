@@ -29,6 +29,8 @@
   --correct-color: #538d4e;
   --wrong-color: #b59f3b;
   --nope-color:#3a3a3c;
+
+  --backdrop-opacity: 0.9;
 }
 
 /* semantic color variables for this project */

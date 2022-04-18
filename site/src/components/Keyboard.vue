@@ -1,21 +1,15 @@
 <script setup>
 import gameStore from '@/stores/gameStore'
 import { reactive, inject } from "vue"
-import { Fireworks } from 'fireworks-js'
+// import { Fireworks } from 'fireworks-js'
+//import * as Confetti from '@/third-party/confetti.min.js'
+import ConfettiGenerator from "confetti-js"
 
-const sharedGameState = gameStore.state
+const state = gameStore.state
 const toast = inject("toast")
-const container = document.querySelector('.fireworks-container')
-const fireworks = new Fireworks(container, { acceleration: 1.02, traceSpeed: 6 })
-container.style.display = 'none'
-
-const state = reactive({
-    allLetters: {
-        top: [...'qwertyuiop'].map(ltr => ({ ltr,s:`` })),
-        mid: [...'asdfghjkl'].map(ltr => ({ ltr,s:`` })),
-        low: [...'zxcvbnm'].map(ltr => ({ ltr,s:`` }))
-    }
-});
+// const container = document.querySelector('.fireworks-container')
+// const fireworks = new Fireworks(container, { acceleration: 1.02, traceSpeed: 6 })
+//container.style.display = 'none'
 
 const enterKey = (key) => {
     if (key == 'Enter') {
@@ -24,8 +18,15 @@ const enterKey = (key) => {
             if (res == 'Success')
             { 
                 toast.success(res, { position: "bottom", pauseOnHover: false })
-                container.style.display = 'block'
-                fireworks.start()
+
+                const confettiSettings = { target: 'confetti' }
+                const confetti = new ConfettiGenerator(confettiSettings)
+                confetti.render()
+
+                // container.style.display = 'block'
+                // let confetti = new window.Confetti('enterKey')
+
+                // fireworks.start()
                 //setTimeout(() => fireworks.stop(),5000)
             } else if (res == 'Next') {} // nothing to toast
             else {
@@ -47,15 +48,11 @@ const enterKey = (key) => {
     // emits('enter-key', key)
 }
 
-defineProps({
-  msg: {
-    type: String,
-    required: true
-  }
-})
+const reset = () => {
+    console.log('reset from keyboard')
+}
 
 const refreshLetterStates = () => {
-    console.log('refreshing letter states on keyboard')
     Object.keys(state.allLetters).forEach(k => {
         state.allLetters[k].forEach(obj => {
             obj.s = gameStore.getKeyState(obj.ltr)
@@ -70,7 +67,7 @@ document.onkeydown = function(e) {
     }
 
     // not a regular letter, so do nothing
-    var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz'.split(``)
     if (!alphabet.includes(e.key))
         return
 
@@ -96,7 +93,7 @@ document.onkeydown = function(e) {
                 </svg>                
             </button>            
             <button :data-s="obj.s" v-for="obj in state.allLetters.low" @click.prevent="enterKey(obj.ltr)" :key="obj.ltr">{{obj.ltr}}</button>
-            <button class="enter f-1-pt-5" @click.prevent="enterKey('Enter')">enter</button>
+            <button id="enterKey" class="enter f-1-pt-5" @click.prevent="enterKey('Enter')">enter</button>
         </div>    
     </div>    
 </template>

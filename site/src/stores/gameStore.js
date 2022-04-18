@@ -1,11 +1,27 @@
 import { reactive } from "vue"
-import wordSvc from '@/services/wordService.js'
 
-const ws = new wordSvc()
+import words from '@/assets/five-letter-words.json'
+import hints from '@/assets/hints.json'
+
+import wordService from '@/services/wordService.js'
+const ws = new wordService()
+
+const launchDate = new Date(`03/29/2022`)
 
 const gameStore = {
+    load() {
+        var date = this.state.date
+        date.setHours(0,0,0,0) // to midnight
+        const oneDay = 24 * 60 * 60 * 1000 // hours*minutes*seconds*milliseconds
+        const diffDays = Math.round(Math.abs((launchDate - date) / oneDay))
+        this.state.answer = Object.keys(hints)[diffDays]
+        this.state.hint = hints[this.state.answer]
+        this.resetGrid()
+        this.resetKeyboard()
+    },
     state: reactive({
         dateLabel: `Today`,
+        date: new Date(),
         answer: ``,
         hint: ``,
         currentRowIdx: 0,
@@ -18,8 +34,28 @@ const gameStore = {
             [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
             [{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``},{ltr:``,s:``}],
         ],
+        allLetters: {
+            top: [...'qwertyuiop'].map(ltr => ({ ltr,s:`` })),
+            mid: [...'asdfghjkl'].map(ltr => ({ ltr,s:`` })),
+            low: [...'zxcvbnm'].map(ltr => ({ ltr,s:`` }))
+        },        
         invalidWordRowIdx: -1
     }),
+    resetKeyboard() {
+        Object.keys(this.state.allLetters).forEach(k => {
+            this.state.allLetters[k].forEach(obj => {
+                obj.s = ``
+            })
+        })
+    },
+    resetGrid() {
+        this.state.grid.forEach(row => row.forEach(cell => {
+            cell.ltr = ``
+            cell.s = ``
+        }))
+        this.state.currentColIdx = 0
+        this.state.currentRowIdx = 0
+    },
     constants: {
         numRows: 6,
         numCols: 5
@@ -47,7 +83,7 @@ const gameStore = {
         const letters = this.state.grid[this.state.currentRowIdx].map(x => x.ltr)
         const word = letters.join('')
         try {
-            const res = ws.submit(word) // success
+            const res = ws.submit(word,this.state.answer) // success
             this.state.grid[this.state.currentRowIdx].map(c => c.s = `c`)
             return `Success`
         } catch (err) {

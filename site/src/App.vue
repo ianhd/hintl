@@ -4,27 +4,33 @@ import Keyboard from './components/Keyboard.vue'
 import Grid from './components/Grid.vue'
 import DateSwitcher from './components/DateSwitcher.vue'
 import Hint from './components/Hint.vue'
+import gameStore from '@/stores/gameStore'
+import { ref, onMounted } from 'vue'
 
-// const keyEntered = (key) => {
-//     alert('test' + key)
-// }
+gameStore.load()
 
+const keyboard = ref(null)
+
+onMounted(() => {
+    console.log(keyboard.value)
+    console.log(keyboard)
+})
 </script>
 
 <template>
     <div class="main">
         <div class="mt-50 mt-20_m">
-            <Grid msg="You did it!" />
+            <Grid />
         </div>
         <div class="controls mt-25">
             <div></div>
-            <div></div>
-            <!-- <DateSwitcher class="ta-c" /> -->
+            <!-- <div></div> -->
+            <DateSwitcher class="ta-c" />
             <Hint />
         </div>
         <!-- <Keyboard @enter-key="keyEntered" msg="You did it!" /> -->
         <div class="mt-25 mt-20_m">
-            <Keyboard  msg="You did it!" />
+            <Keyboard ref="keyboard" />
         </div>
     </div>
 </template>

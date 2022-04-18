@@ -2,13 +2,6 @@
 import gameStore from '@/stores/gameStore'
 
 const sharedGameState = gameStore.state
-
-defineProps({
-  msg: {
-    type: String,
-    required: true
-  }
-})
 </script>
 
 <template>
