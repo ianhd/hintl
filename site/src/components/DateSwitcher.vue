@@ -45,7 +45,7 @@ const go = (direction) => {
         sharedGameState.dateIsoShort = newDate.toIsoShort()
     }
     try {
-        window.confetti.clear()
+        //window.confetti.clear()
     } catch(err) {}
     gameStore.load()
 }

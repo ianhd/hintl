@@ -1,7 +1,8 @@
 <script setup>
 import gameStore from '@/stores/gameStore'
 import { inject } from "vue"
-import ConfettiGenerator from "confetti-js"
+//import ConfettiGenerator from "confetti-js"
+import confetti from 'https://cdn.skypack.dev/canvas-confetti'
 
 const toast = inject("toast")
 
@@ -13,10 +14,10 @@ const enterKey = (key) => {
         if (res == 'Success')
         { 
             toast.success(res, { position: "bottom", pauseOnHover: false })
-
-            const confettiSettings = { target: 'confetti' }
-            window.confetti = new ConfettiGenerator(confettiSettings)
-            window.confetti.render()
+            confetti()
+            // const confettiSettings = { target: 'confetti' }
+            // window.confetti = new ConfettiGenerator(confettiSettings)
+            // window.confetti.render()
         } else if (res == 'Next') {} // nothing to toast
         else {
             toast.show(res, { position: "bottom", pauseOnHover: false })
